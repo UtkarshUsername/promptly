@@ -23,14 +23,17 @@ People lose time and quality because they *think* their prompt is clear, but it�
 7) Monetization in the first 60 days:
    - (A) free only  (B) freemium (limits)  (C) paid from day 1
 
-## Your current answers (Feb 15, 2026)
-- Persona: **TBD** (you said “all depending on settings”)
-- V1 surface: **Extension** (Grammarly-like, cross-browser)
-- Prompting style focus: **All** (site-specific settings)
-- Output: **D** (score + checklist + one-click rewrite)
-- LLM API: **A** (OpenRouter BYOK)
-- Privacy: **B** (store prompts with consent)
-- Monetization: **A** (free for V1; revisit freemium when we provide LLM usage)
+## Final decisions (locked Feb 15, 2026)
+- Persona: **Individual AI chat users in marketing/content and knowledge work** who iterate prompts daily and care about speed + quality.
+- V1 surface: **Extension** (Chrome-first side panel + popup).
+- Prompting style focus: **General LLM prompts**, with structured-output support when users request JSON/table/rubric formats.
+- Output: **D** (score + checklist + one-click rewrite).
+- LLM API: **A** (OpenRouter BYOK) with a rules-only fallback when no key is configured.
+- Privacy: **B** (store prompts only with explicit opt-in; default off).
+- Monetization: **A** (free for V1 while BYOK).
+- Coverage level: **Level 2** for launch targets (`chatgpt.com`, `claude.ai`, `gemini.google.com`, `chat.deepseek.com`) with **Level 1 fallback** on unsupported editors.
+- Browser support at launch: **Chromium browsers** (Chrome/Edge/Brave) via MV3; Firefox support moves to post-V1.
+- Score display: **Numeric 0-100 Prompt Health score plus qualitative label** (Strong/Fair/Needs work).
 
 ## Success criteria (pick 1–2)
 - (S1) Users paste a prompt, accept ≥1 suggestion, and report better output.
@@ -61,8 +64,8 @@ Ship an extension that works great in two ways:
 - Model-specific tuning and per-role templates
 - A/B testing prompts, analytics dashboards
 
-## Decision we still need (to avoid boiling the ocean)
-Pick a **Coverage Level** for launch:
+## Coverage decision
+Chosen **Coverage Level 2** for launch:
 - **Level 1 (Recommended):** Side panel works everywhere + inline only for `input/textarea` + simple `contenteditable`.
 - **Level 2:** Add 2–3 “site adapters” (e.g., ChatGPT + Google Docs + Notion).
 - **Level 3:** “Any field” ambition (ongoing, expensive).
@@ -73,7 +76,7 @@ Pick a **Coverage Level** for launch:
 - `gemini.google.com`
 - `chat.deepseek.com`
 
-Recommendation: treat this as **Coverage Level 2** (with 4 adapters), but keep a **Level 1 fallback** (side panel + copy/paste) for anything we can’t reliably read/write inline.
+Decision confirmed: ship **Coverage Level 2** (with 4 adapters), and keep a **Level 1 fallback** (side panel + copy/paste) for anything we can’t reliably read/write inline.
 
 ## Assumptions to validate (fast)
 - Users understand “prompt quality” feedback if it’s framed as outcomes (“This reduces ambiguity…”) not jargon.

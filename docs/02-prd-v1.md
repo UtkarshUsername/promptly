@@ -3,12 +3,12 @@
 ## One-sentence product definition
 Promptly helps you turn a rough prompt into a high-quality prompt by diagnosing gaps and offering concrete improvements and optional rewrites.
 
-## Target user (fill in)
-- Primary persona:
+## Target user
+- Primary persona: Individual AI chat users in marketing/content and knowledge-work roles (solo operators, PMs, analysts) who use ChatGPT/Claude/Gemini daily and want better outputs with less trial-and-error.
 - Top 3 jobs-to-be-done:
-  1.
-  2.
-  3.
+  1. Turn a rough prompt into a clear, high-quality prompt in under two minutes.
+  2. Catch missing constraints/format requirements before sending prompts to the model.
+  3. Generate a copy-ready rewrite that preserves intent and improves reliability.
 
 ## V1 scope (what we will ship)
 ### Surface: browser extension (V1)
@@ -59,10 +59,9 @@ V1 supports:
 - Engagement: prompts analyzed per user per week
 - Quality proxy: thumbs up/down on suggestions
 
-## Open questions (decision points)
-- Coverage level for inline support (side panel only vs limited inline vs site adapters)
-- Which browsers for V1 launch (Chrome-only vs Chrome+Firefox, etc.)
-- OpenRouter BYOK UX (bring key, choose model, set limits)
-- Where history is stored (local-only vs cloud sync)
+## Locked V1 decisions
+- Inline coverage: **Level 2**, with targeted adapters for `chatgpt.com`, `claude.ai`, `gemini.google.com`, and `chat.deepseek.com`, plus Level 1 fallback behavior.
+- Browser launch scope: **Chromium first** (Chrome/Edge/Brave via MV3).
+- OpenRouter UX: BYOK key entry + key validation + model picker + rules-only mode without API key.
+- History storage: local extension storage only, and only when user opts in.
 - Monetization is **out of scope for V1** (free while BYOK); revisit when we offer hosted LLM usage.
-- Which site adapters ship in V1 (initial list: ChatGPT, Claude, Gemini, DeepSeek chat)
