@@ -24,6 +24,7 @@ Grammarly-style feedback for prompt engineering: analyze a prompt, explain what�
 - `docs/08-ux-spec-v1.md` — UX deliverables (IA, components, microcopy, a11y)
 - `docs/09-rule-engine-v1.md` — JSON schemas + first 20 lint rules
 - `docs/10-llm-rubric-v1.md` — critic/rewriter system prompts and response schema
+- `docs/11-site-adapter-implementation.md` — per-site adapter strategy, hooks, and validation checklists
 
 ## Run the extension locally
 1. Open `chrome://extensions` in Chrome/Edge/Brave.

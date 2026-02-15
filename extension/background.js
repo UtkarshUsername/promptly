@@ -167,6 +167,16 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         sendResponse(result);
         return;
       }
+      case "PROMPTLY_GET_ACTIVE_HEALTH": {
+        const tab = await getActiveTab();
+        const settings = await getSettings();
+        const result = await sendContentMessage(tab.id, {
+          type: "PROMPTLY_CONTENT_HEALTH",
+          enabledSites: settings.enabledSites
+        });
+        sendResponse(result);
+        return;
+      }
       case "PROMPTLY_REWRITE": {
         const result = await requestRewrite(message.payload || {});
         sendResponse(result);

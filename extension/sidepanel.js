@@ -7,7 +7,8 @@ const state = {
   rewrite: null,
   activeVariant: "default",
   source: "manual",
-  originalAtRewrite: ""
+  originalAtRewrite: "",
+  health: null
 };
 
 function labelTitle(label) {
@@ -47,6 +48,37 @@ function setSettingsStatus(settings) {
   }
 
   privacyStatus.textContent = settings.historyEnabled ? "History: on" : "History: off";
+}
+
+function setAdapterHealthStatus(health) {
+  const chip = document.getElementById("adapterHealth");
+  if (!health) {
+    chip.textContent = "Adapter: unknown";
+    return;
+  }
+
+  if (health.supported) {
+    const adapterLabel = health.adapter_name || "Generic";
+    const modeLabel = health.mode || "generic";
+    chip.textContent = `Adapter: ${adapterLabel} (${modeLabel})`;
+    return;
+  }
+
+  chip.textContent = `Adapter: ${health.status || "unsupported"}`;
+}
+
+async function refreshAdapterHealth() {
+  const response = await sendMessage({ type: "PROMPTLY_GET_ACTIVE_HEALTH" });
+  if (!response?.ok) {
+    setAdapterHealthStatus({
+      supported: false,
+      status: "unavailable"
+    });
+    return;
+  }
+
+  state.health = response;
+  setAdapterHealthStatus(response);
 }
 
 function getCurrentImprovedText() {
@@ -234,6 +266,7 @@ async function generateRewrite() {
 async function captureFromPage() {
   const response = await sendMessage({ type: "PROMPTLY_CAPTURE_ACTIVE" });
   if (!response?.ok) {
+    setAdapterHealthStatus(response?.health || state.health);
     showToast(response?.error || "Unable to capture text from page.");
     return;
   }
@@ -243,6 +276,7 @@ async function captureFromPage() {
 
   state.source = response.source || "capture";
   document.getElementById("sourceBadge").textContent = `Source: ${state.source}`;
+  setAdapterHealthStatus(response?.health || state.health);
   showToast("Prompt captured from active page.");
 }
 
@@ -259,13 +293,15 @@ async function insertImprovedPrompt() {
   });
 
   if (response?.ok) {
+    setAdapterHealthStatus(response?.health || state.health);
     showToast("Inserted into page.");
     return;
   }
 
+  setAdapterHealthStatus(response?.health || state.health);
   try {
     await navigator.clipboard.writeText(text);
-    showToast("Insert failed. Copied to clipboard.");
+    showToast(`${response?.error || "Insert failed"}. Copied to clipboard.`);
   } catch (_error) {
     showToast(response?.error || "Insert failed.");
   }
@@ -385,6 +421,7 @@ async function init() {
 
   bindEvents();
   await loadSessionDraft();
+  await refreshAdapterHealth();
   renderSummary();
   renderSuggestions();
   renderRewrite();
