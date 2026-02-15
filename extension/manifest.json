@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "Promptly",
+  "description": "Analyze and improve prompts with lint suggestions and optional OpenRouter rewrites.",
+  "version": "0.1.0",
+  "action": {
+    "default_title": "Promptly",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "clipboardWrite",
+    "sidePanel",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "https://openrouter.ai/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content-script.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "options.html",
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "commands": {
+    "open-side-panel": {
+      "description": "Open Promptly side panel",
+      "suggested_key": {
+        "default": "Ctrl+Shift+P",
+        "mac": "Command+Shift+P"
+      }
+    }
+  }
+}

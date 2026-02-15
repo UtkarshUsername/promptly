@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Promptly Settings</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .options-wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      #historyList {
+        max-height: 280px;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .history-item {
+        border: 1px solid var(--line-soft);
+        border-radius: 10px;
+        padding: 10px;
+        background: #fff;
+      }
+
+      .checkbox-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 8px;
+      }
+
+      label.inline {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="options-wrap stack">
+      <section class="panel stack">
+        <h1>Promptly Settings</h1>
+        <p>Configure OpenRouter BYOK, privacy, and per-site behavior.</p>
+      </section>
+
+      <section class="panel stack">
+        <h2>LLM Configuration</h2>
+        <div class="kv">
+          <label for="apiKey">OpenRouter API key</label>
+          <input id="apiKey" type="password" placeholder="sk-or-v1-..." autocomplete="off" />
+        </div>
+        <div class="kv">
+          <label for="model">Model id</label>
+          <input id="model" type="text" placeholder="openai/gpt-4o-mini" />
+        </div>
+        <div class="row">
+          <label class="inline"><input id="rulesOnlyMode" type="checkbox" /> Rules-only mode</label>
+          <label class="inline"><input id="historyEnabled" type="checkbox" /> Enable local history (opt-in)</label>
+        </div>
+        <div class="row">
+          <button class="primary" id="saveBtn">Save Settings</button>
+          <button class="secondary" id="validateBtn">Validate Key</button>
+        </div>
+        <p class="notice" id="saveStatus">No pending changes.</p>
+      </section>
+
+      <section class="panel stack">
+        <h2>Site adapters</h2>
+        <p class="notice">Disable sites if you do not want Promptly capture/insert there.</p>
+        <div class="checkbox-grid">
+          <label class="inline"><input id="siteGlobal" type="checkbox" /> Generic mode (`*`)</label>
+          <label class="inline"><input id="siteChatGPT" type="checkbox" /> chatgpt.com</label>
+          <label class="inline"><input id="siteClaude" type="checkbox" /> claude.ai</label>
+          <label class="inline"><input id="siteGemini" type="checkbox" /> gemini.google.com</label>
+          <label class="inline"><input id="siteDeepSeek" type="checkbox" /> chat.deepseek.com</label>
+        </div>
+      </section>
+
+      <section class="panel stack">
+        <div class="row space-between">
+          <h2>Local History</h2>
+          <div class="row">
+            <button class="secondary" id="refreshHistoryBtn">Refresh</button>
+            <button class="ghost" id="clearHistoryBtn">Clear History</button>
+          </div>
+        </div>
+        <div id="historyList"></div>
+      </section>
+    </main>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

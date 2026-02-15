@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Promptly</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        width: 360px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="panel stack">
+        <div class="row space-between">
+          <h1>Promptly</h1>
+          <span class="chip" id="popupStatus">Checking status…</span>
+        </div>
+        <p>Capture text from the page, then continue in the side panel.</p>
+        <div class="row">
+          <button class="primary" id="captureBtn">Capture Active Field</button>
+          <button class="secondary" id="openPanelBtn">Open Side Panel</button>
+        </div>
+        <p class="notice" id="captureResult">No capture yet.</p>
+      </section>
+
+      <section class="panel stack">
+        <h2>Quick Draft</h2>
+        <textarea id="quickPrompt" placeholder="Paste a prompt draft…"></textarea>
+        <div class="row">
+          <button class="secondary" id="saveDraftBtn">Save Draft For Panel</button>
+          <button class="ghost" id="optionsBtn">Settings</button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

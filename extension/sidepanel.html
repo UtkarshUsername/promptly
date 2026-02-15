@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Promptly Side Panel</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="panel stack">
+        <div class="row space-between">
+          <h1>Promptly</h1>
+          <button class="ghost" id="openOptionsBtn">Settings</button>
+        </div>
+        <div class="chips">
+          <span class="chip" id="sourceBadge">Manual input</span>
+          <span class="chip" id="modelStatus">Loading model status…</span>
+          <span class="chip" id="privacyStatus">History: off</span>
+        </div>
+      </section>
+
+      <section class="panel stack">
+        <div class="row space-between">
+          <h2>Original Prompt</h2>
+          <span class="notice" id="promptLength">0 chars</span>
+        </div>
+        <textarea id="promptInput" placeholder="Paste or capture a prompt to analyze..."></textarea>
+        <div class="row">
+          <select id="intentSelect" aria-label="Intent selector">
+            <option value="write">Write</option>
+            <option value="analyze">Analyze</option>
+            <option value="summarize">Summarize</option>
+            <option value="code">Code</option>
+            <option value="brainstorm">Brainstorm</option>
+            <option value="other" selected>Other</option>
+          </select>
+          <button class="secondary" id="captureBtn">Capture</button>
+          <button class="primary" id="analyzeBtn">Analyze</button>
+          <button class="ghost" id="clearBtn">Clear</button>
+        </div>
+      </section>
+
+      <section class="panel stack" id="resultsPanel">
+        <div class="row">
+          <div class="score" id="scoreValue">--</div>
+          <div class="stack">
+            <h2 id="scoreLabel">Run analysis</h2>
+            <p id="summaryText">Get a checklist and rewrite-ready findings.</p>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="row space-between">
+            <h3>Suggestions</h3>
+            <span class="notice" id="suggestionCount">0 issues</span>
+          </div>
+          <div id="suggestionsList"></div>
+        </div>
+      </section>
+
+      <section class="panel stack">
+        <div class="row space-between">
+          <h2>Improved Prompt</h2>
+          <button class="secondary" id="rewriteBtn">Generate Rewrite</button>
+        </div>
+        <div class="variant-tabs">
+          <button class="variant-tab secondary active" data-variant="default">Default</button>
+          <button class="variant-tab secondary" data-variant="short">Short</button>
+          <button class="variant-tab secondary" data-variant="strict_format" id="strictVariantBtn">Strict format</button>
+        </div>
+        <textarea id="improvedPrompt" placeholder="Rewrite output appears here..."></textarea>
+        <p class="notice" id="rewriteNotes">Rewrite notes will appear here.</p>
+        <div class="row">
+          <button class="primary" id="copyImprovedBtn">Copy Improved</button>
+          <button class="secondary" id="insertImprovedBtn">Insert In Page</button>
+          <button class="ghost" id="toggleDiffBtn">Show Diff</button>
+        </div>
+        <div id="diffView" style="display: none;"></div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast"></div>
+    <script type="module" src="sidepanel.js"></script>
+  </body>
+</html>
