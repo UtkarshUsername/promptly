@@ -5,45 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Promptly Settings</title>
     <link rel="stylesheet" href="styles.css" />
-    <style>
-      .options-wrap {
-        max-width: 980px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-
-      #historyList {
-        max-height: 280px;
-        overflow: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .history-item {
-        border: 1px solid var(--line-soft);
-        border-radius: 10px;
-        padding: 10px;
-        background: #fff;
-      }
-
-      .checkbox-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 8px;
-      }
-
-      label.inline {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-    </style>
   </head>
   <body>
     <main class="options-wrap stack">
       <section class="panel stack">
-        <h1>Promptly Settings</h1>
+        <p class="eyebrow">Control room</p>
+        <div class="panel-title">
+          <span class="brand-dot" aria-hidden="true"></span>
+          <h1>Promptly Settings</h1>
+        </div>
         <p>Configure OpenRouter BYOK, privacy, and per-site behavior.</p>
       </section>
 
