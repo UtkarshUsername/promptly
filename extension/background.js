@@ -1,4 +1,5 @@
 import { COMBINED_SYSTEM_PROMPT, buildRewriteUserMessage } from "./src/prompts.js";
+import { normalizeRewriteResponse, parseModelJson } from "./src/rewrite-response.js";
 import {
   addHistoryEntry,
   clearHistory,
@@ -9,6 +10,7 @@ import {
 } from "./src/storage.js";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+const OPENROUTER_TIMEOUT_MS = 45000;
 
 function sendContentMessage(tabId, payload) {
   return new Promise((resolve) => {
@@ -20,24 +22,6 @@ function sendContentMessage(tabId, payload) {
       resolve(response || { ok: false, error: "No response from content script" });
     });
   });
-}
-
-function parseJsonSafe(text) {
-  if (!text) {
-    return null;
-  }
-
-  const cleaned = text
-    .replace(/^```json\s*/i, "")
-    .replace(/^```\s*/i, "")
-    .replace(/```\s*$/i, "")
-    .trim();
-
-  try {
-    return JSON.parse(cleaned);
-  } catch (_error) {
-    return null;
-  }
 }
 
 async function getActiveTab() {
@@ -67,27 +51,49 @@ async function requestRewrite({ prompt, intent, suggestions }) {
     wantsStructuredOutput
   });
 
-  const response = await fetch(OPENROUTER_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${settings.openRouterApiKey}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: settings.openRouterModel,
-      temperature: 0.3,
-      messages: [
-        {
-          role: "system",
-          content: COMBINED_SYSTEM_PROMPT
-        },
-        {
-          role: "user",
-          content: userMessage
-        }
-      ]
-    })
-  });
+  const abortController = new AbortController();
+  const timeoutId = setTimeout(() => abortController.abort(), OPENROUTER_TIMEOUT_MS);
+  let response;
+
+  try {
+    response = await fetch(OPENROUTER_URL, {
+      method: "POST",
+      signal: abortController.signal,
+      headers: {
+        Authorization: `Bearer ${settings.openRouterApiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: settings.openRouterModel,
+        temperature: 0.3,
+        messages: [
+          {
+            role: "system",
+            content: COMBINED_SYSTEM_PROMPT
+          },
+          {
+            role: "user",
+            content: userMessage
+          }
+        ]
+      })
+    });
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      return {
+        ok: false,
+        code: "OPENROUTER_TIMEOUT",
+        error: `OpenRouter request timed out after ${Math.round(OPENROUTER_TIMEOUT_MS / 1000)} seconds.`
+      };
+    }
+    return {
+      ok: false,
+      code: "OPENROUTER_NETWORK_ERROR",
+      error: error?.message || "Could not reach OpenRouter."
+    };
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
     const payload = await response.text();
@@ -98,11 +104,22 @@ async function requestRewrite({ prompt, intent, suggestions }) {
     };
   }
 
-  const data = await response.json();
-  const content = data?.choices?.[0]?.message?.content || "";
-  const parsed = parseJsonSafe(content);
+  let data;
+  try {
+    data = await response.json();
+  } catch (_error) {
+    return {
+      ok: false,
+      code: "OPENROUTER_INVALID_JSON",
+      error: "OpenRouter response was not valid JSON."
+    };
+  }
 
-  if (!parsed || !parsed.rewriter) {
+  const content = data?.choices?.[0]?.message?.content || "";
+  const parsed = parseModelJson(content);
+  const normalized = normalizeRewriteResponse(parsed);
+
+  if (!normalized) {
     return {
       ok: false,
       code: "INVALID_REWRITE_RESPONSE",
@@ -112,7 +129,7 @@ async function requestRewrite({ prompt, intent, suggestions }) {
 
   return {
     ok: true,
-    data: parsed
+    data: normalized
   };
 }
 
